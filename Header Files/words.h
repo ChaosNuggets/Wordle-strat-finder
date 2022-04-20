@@ -1,4 +1,4 @@
 #include <string>
 #include <vector>
 
-extern std::vector<std::vector<std::string>> words;
+extern std::vector<std::vector<std::vector<std::string>>> words;
