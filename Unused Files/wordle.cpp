@@ -32,9 +32,9 @@
 //     std::string answer;
 //     std::ifstream fin("words.txt");
 //     if (fin.is_open()) {
-//         gotoLine(fin, distribution(generator));
-//         fin >> answer;
-//         // answer = "faves";
+//         // gotoLine(fin, distribution(generator));
+//         // fin >> answer;
+//         answer = "tases";
 //     } else
 //         throw std::runtime_error("file is not open");
 //     bool hasWon = false;
@@ -81,3 +81,8 @@
 //     std::cin.ignore();
 //     return 0;
 // }
+
+// //  a e
+// //    t
+// //
+// //s

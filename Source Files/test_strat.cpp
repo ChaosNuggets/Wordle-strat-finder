@@ -1,14 +1,11 @@
 #include <random>
 #include <iostream>
-#include <fstream>
+#include "words.h"
+#include "skip_helper.h"
 #include <algorithm>
+#include <chrono>
 
-void gotoLine(std::ifstream& fin, unsigned int num){
-    fin.seekg(std::ios::beg);
-    for(int i = 0; i < num - 1; i++){
-        fin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
-    }
-}
+typedef std::chrono::high_resolution_clock Clock;
 
 void determineColors(std::vector<char>& grays, std::vector<std::pair<char, int>>& greens, std::vector<std::pair<char, int>>& oranges, std::string input, std::string answer) {
     for (int j = 0; j < 5; j++) {
@@ -33,114 +30,191 @@ void determineColors(std::vector<char>& grays, std::vector<std::pair<char, int>>
     }
 }
 
-int main() {
-    const int numberOfWords = 12947;
-    // const std::vector<std::string> firstWords = {"soily", "prude", "chant"};
-    const std::vector<std::string> firstWords = {"brame", "flint", "podgy", "shuck"};
-    // const std::vector<std::string> firstWords = {"glent", "brick", "jumpy", "vozhd", "waqfs"};
-    int numberOfFails = 0;
-
-    std::ifstream fin1("words.txt");
-    if (!fin1.is_open())
-        throw std::runtime_error("fin1 could not open file");
-    for (int h = 0; h < numberOfWords - 1; h++) {
-        std::string answer;
-        fin1 >> answer;
-        
-        bool hasWon = false;
-        int numberOfWordsTested = 0;
-        //char = letter, int = index
-        std::vector<char> grays;
-        std::vector<std::pair<char, int>> greens;
-        std::vector<std::pair<char, int>> oranges;
-        std::vector<std::string> wordsGuessed;
-        for (int i = 0; i < firstWords.size(); i++) {
-            std::string input = firstWords[i];
-            numberOfWordsTested++;
-            wordsGuessed.push_back(input);
-            if (input == answer) {
-                hasWon = true;
-                break;
-            }
-            determineColors(grays, greens, oranges, input, answer);
-            if (greens.size() + oranges.size() == 5)
-                break;
-        }
-        if (hasWon)
-            continue;
-        int allCluesReached = wordsGuessed.size();
-        std::vector<char> firstWordsGreens;
-        for (auto& [letter, index] : greens) {
-            firstWordsGreens.emplace_back(letter);
-        }
-        std::vector<char> firstWordsOranges;
-        for (auto& [letter, index] : oranges) {
-            firstWordsOranges.emplace_back(letter);
-        }
-        std::string input;
-        std::ifstream fin2("words.txt");
-        for (int i = 0; i < numberOfWords-1; i++) {
-            if (numberOfWordsTested >= 6) {
-                break;
-            }
-            //Determine input
-            fin2 >> input;
-            bool isGoodInput = true;
-            //Test grays
-            for (char letter : input) {
-                if (std::find(grays.begin(), grays.end(), letter) != grays.end()) {
-                    isGoodInput = false;
-                    break;
-                }
-            }
-            if (!isGoodInput)
-                continue;
-            //Test greens
-            for (auto& [letter, index] : greens) {
-                if (input[index] != letter) {
-                    isGoodInput = false;
-                    break;
-                }
-            }
-            if (!isGoodInput)
-                continue;
-            //Test oranges
-            for (auto& [letter, index] : oranges) {
-                auto found = input.find(letter);
-                if (found == index || found == std::string::npos) {
-                    isGoodInput = false;
-                    break;
-                }
-            }
-            if (!isGoodInput)
-                continue;
-            //If the code reaches here, the input is good, so try it
-            numberOfWordsTested++;
-            wordsGuessed.push_back(input);
-            if (input == answer) {
-                hasWon = true;
-                break;
-            }
-            determineColors(grays, greens, oranges, input, answer);
-        }
-        if (!hasWon) {
-            // using std::cout;
-            // // cout << "failed on " << answer << " (";
-            // // for (int i = allCluesReached; i < wordsGuessed.size(); i++)
-            // //     cout << wordsGuessed[i] << ' ';
-            // // cout << ", greens:";
-            // for (char letter : firstWordsGreens)
-            //     cout << ' ' << letter;
-            // // cout << ", oranges:";
-            // cout << ',';
-            // for (char letter : firstWordsOranges)
-            //     cout << ' ' << letter;
-            // // cout << ")\n";
-            // cout << '\n';
-            numberOfFails++;
-        }
+std::vector<std::pair<char, int>>::iterator findPair(const std::vector<std::pair<char, int>>::iterator first, const std::vector<std::pair<char, int>>::iterator last, const std::pair<char, int>& item) {
+    for (auto it = first; it != last; it++) {
+        if (*it == item)
+            return it;
     }
-    std::cout << "number of fails: " << numberOfFails;
+    return last;
+}
+
+std::vector<std::pair<char, int>>::iterator findSecond(const std::vector<std::pair<char, int>>::iterator first, const std::vector<std::pair<char, int>>::iterator last, const int item) {
+    for (auto it = first; it != last; it++) {
+        if (it->second == item)
+            return it;
+    }
+    return last;
+}
+
+int main() {
+    std::cout << "running ";
+    auto startRunning = Clock::now();
+    // const std::vector<std::string> firstWords = {"soily", "prude", "chant"};
+    std::vector<std::string> firstWords = {"brame", "flint", "podgy", "shuck"};
+    // const std::vector<std::string> firstWords = {"glent", "brick", "jumpy", "vozhd", "waqfs"};
+
+    int lowestFails = 12947;
+    int highestFails = 0;
+    std::vector<std::vector<std::string>> bestPermutations;
+    //test all permutations
+    std::sort(firstWords.begin(), firstWords.end());
+    do {
+        int numberOfFails = 0;
+        for (auto& answerFirst : words) {
+            for (auto& answerSecond : answerFirst) {
+                for (std::string answer : answerSecond) {
+                    bool hasWon = false;
+                    int numberOfWordsTested = 0;
+                    //char = letter, int = index
+                    std::vector<char> grays;
+                    std::vector<std::pair<char, int>> greens;
+                    std::vector<std::pair<char, int>> oranges;
+                    std::vector<std::string> wordsGuessed;
+
+                    //Use first words
+                    for (int i = 0; i < firstWords.size(); i++) {
+                        std::string input = firstWords[i];
+                        numberOfWordsTested++;
+                        if (input == answer) {
+                            hasWon = true;
+                            break;
+                        }
+                        determineColors(grays, greens, oranges, input, answer);
+                        if (greens.size() + oranges.size() == 5)
+                            break;
+                    }
+                    if (hasWon)
+                        continue;
+
+                    //Guess based on possible words
+                    //First 2 for loops are for skipping over the impossible words
+                    bool shouldCompletelyBreak = false;
+                    for (int inputFirst = 0; inputFirst < words.size(); inputFirst++) {
+                        char firstLetter = firstDimensionOrder[inputFirst];
+                        //Test grays (if it finds the letter in grays continue)
+                        if (std::find(grays.begin(), grays.end(), firstLetter) != grays.end())
+                            continue;
+                        //Test greens (if there is a green with index 0 and it's not equal to the first letter continue)
+                        {
+                            auto it = findSecond(greens.begin(), greens.end(), 0);
+                            if (it != greens.end())
+                                if (it->first != firstLetter)
+                                    continue;
+                        }
+                        //Test oranges (if it finds the same letter in the same index that is orange, continue)
+                        if (findPair(oranges.begin(), oranges.end(), {firstLetter, 0}) != oranges.end())
+                            continue;
+                        for (int inputSecond = 0; inputSecond < words[inputFirst].size(); inputSecond++) {
+                            char secondLetter = alphaPlaceToChar(inputSecond);
+                            if (std::find(grays.begin(), grays.end(), secondLetter) != grays.end())
+                                continue;
+                            //Test greens (if it doesn't find the pair inside greens continue)
+                            {
+                                auto it = findSecond(greens.begin(), greens.end(), 1);
+                                if (it != greens.end())
+                                    if (it->first != secondLetter)
+                                        continue;
+                            }
+                            //Test oranges (if it finds the same letter in the same index that is orange, continue)
+                            if (findPair(oranges.begin(), oranges.end(), {secondLetter, 1}) != oranges.end())
+                                continue;
+                            for (std::string input : words[inputFirst][inputSecond]) {
+                                bool isGoodInput = true;
+                                //Test grays (we only need to test the last 3 letters since we already tested the first 2 above)
+                                for (int i = 2; i < 5; i++) {
+                                    if (std::find(grays.begin(), grays.end(), input[i]) != grays.end()) {
+                                        isGoodInput = false;
+                                        break;
+                                    }
+                                }
+                                if (!isGoodInput)
+                                    continue;
+                                //Test greens
+                                for (auto& [letter, index] : greens) {
+                                    if (input[index] != letter) {
+                                        isGoodInput = false;
+                                        break;
+                                    }
+                                }
+                                if (!isGoodInput)
+                                    continue;
+                                //Test oranges
+                                for (auto& [letter, index] : oranges) {
+                                    std::size_t startLooking = 0;
+                                    bool hasBeenFound = false;
+                                    while (true) {
+                                        auto found = input.find(letter, startLooking);
+                                        if (found == std::string::npos)
+                                            break;
+                                        else
+                                            hasBeenFound = true;
+                                        if (found == index) {
+                                            isGoodInput = false;
+                                            break;
+                                        }
+                                        startLooking = found+1;
+                                    }
+                                    if (!hasBeenFound) {
+                                        isGoodInput = false;
+                                    }
+                                    if (!isGoodInput) {
+                                        break;
+                                    }
+                                }
+                                if (!isGoodInput)
+                                    continue;
+                                //If the code reaches here, the input is good, so try it
+                                numberOfWordsTested++;
+                                wordsGuessed.push_back(input);
+                                if (input == answer) {
+                                    hasWon = true;
+                                    shouldCompletelyBreak = true;
+                                    break;
+                                }
+                                if (numberOfWordsTested >= 6) {
+                                    shouldCompletelyBreak = true;
+                                    break;
+                                }
+                                determineColors(grays, greens, oranges, input, answer);
+                            }
+                            if (shouldCompletelyBreak)
+                                break;
+                        }
+                        if (shouldCompletelyBreak)
+                            break;
+                    }
+                    if (!hasWon) {
+                        // using std::cout;
+                        // cout << "failed on " << answer << " (";
+                        // for (std::string word : wordsGuessed)
+                        //     cout << word << ' ';
+                        // cout << ')';
+                        // cout << '\n';
+                        numberOfFails++;
+                    }
+                }
+            }
+        }
+        if (numberOfFails < lowestFails) {
+            bestPermutations.clear();
+            lowestFails = numberOfFails;
+            bestPermutations.push_back(firstWords);
+        } else if (numberOfFails == lowestFails) {
+            bestPermutations.push_back(firstWords);
+        }
+        if (numberOfFails > highestFails)
+            highestFails = numberOfFails;
+    } while (std::next_permutation(firstWords.begin(), firstWords.end()));
+    auto finishRunning = Clock::now();
+    std::cout << '(' << std::chrono::duration_cast<std::chrono::milliseconds>(finishRunning - startRunning).count() << "ms)\n";
+    for (auto& set : bestPermutations) {
+        for (std::string word : set) {
+            std::cout << word << ' ';
+        }
+        std::cout << '\n';
+    }
+    std::cout << "lowest fails: " << lowestFails << '\n';
+    std::cout << "highest fails: " << highestFails;
     std::cin.ignore();
     return 0;
 }
