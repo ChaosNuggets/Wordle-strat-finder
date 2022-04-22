@@ -5,6 +5,10 @@
 #include "test_words.h"
 #include <thread>
 #include <mutex>
+#include <chrono>
+// #include "possible_answers.h"
+
+typedef std::chrono::high_resolution_clock Clock;
 
 void determineColors(std::vector<char>& grays, std::vector<std::pair<char, int>>& greens, std::vector<std::pair<char, int>>& oranges, std::string input, std::string answer) {
     for (int j = 0; j < 5; j++) {
@@ -45,13 +49,20 @@ std::vector<std::pair<char, int>>::iterator findSecond(const std::vector<std::pa
     return last;
 }
 
+int lowestFails = 12947;
+
+bool doWordsFail(const std::string answer, const std::vector<std::string> firstWords) {
+    
+}
+
 int testWords(const std::vector<std::string> firstWords) {
     int numberOfFails = 0;
     for (auto& answerFirst : constWords) {
         for (auto& answerSecond : answerFirst) {
             for (std::string answer : answerSecond) {
+            // for (std::string answer : possibleAnswers) {
                 bool hasWon = false;
-                int numberOfWordsTested = 0;
+                int numberOfWordsGuessed = 0;
                 //char = letter, int = index
                 std::vector<char> grays;
                 std::vector<std::pair<char, int>> greens;
@@ -61,7 +72,7 @@ int testWords(const std::vector<std::string> firstWords) {
                 //Use first words
                 for (int i = 0; i < firstWords.size(); i++) {
                     std::string input = firstWords[i];
-                    numberOfWordsTested++;
+                    numberOfWordsGuessed++;
                     if (input == answer) {
                         hasWon = true;
                         break;
@@ -151,14 +162,14 @@ int testWords(const std::vector<std::string> firstWords) {
                             if (!isGoodInput)
                                 continue;
                             //If the code reaches here, the input is good, so try it
-                            numberOfWordsTested++;
+                            numberOfWordsGuessed++;
                             wordsGuessed.push_back(input);
                             if (input == answer) {
                                 hasWon = true;
                                 shouldCompletelyBreak = true;
                                 break;
                             }
-                            if (numberOfWordsTested >= 6) {
+                            if (numberOfWordsGuessed >= 6) {
                                 shouldCompletelyBreak = true;
                                 break;
                             }
@@ -178,6 +189,11 @@ int testWords(const std::vector<std::string> firstWords) {
                     // cout << ')';
                     // cout << '\n';
                     numberOfFails++;
+                    //lowestFails is only going to go down so it's fine if this reads from an old lowestFails
+                    if (numberOfFails > lowestFails) {
+                        //We can return early if it goes over lowestFails
+                        return numberOfFails;
+                    }
                 }
             }
         }
@@ -185,8 +201,7 @@ int testWords(const std::vector<std::string> firstWords) {
     return numberOfFails;
 }
 
-int lowestFails = 12947;
-std::vector<std::vector<std::string>> bestPermutations;
+std::vector</*std::vector<*/std::string>/*>*/ bestPermutations;
 std::mutex mtx;
 
 void compareFails(const std::vector<std::string> firstWords) {
@@ -194,15 +209,22 @@ void compareFails(const std::vector<std::string> firstWords) {
     if (numberOfFails < lowestFails) {
         mtx.lock();
         lowestFails = numberOfFails;
-        bestPermutations.clear();
-        bestPermutations.push_back(firstWords);
+        bestPermutations = firstWords;
+        // bestPermutations.clear();
+        // bestPermutations.push_back(firstWords);
         mtx.unlock();
-    } else if (numberOfFails == lowestFails) {
+    } /*else if (numberOfFails == lowestFails) {
         mtx.lock();
         bestPermutations.push_back(firstWords);
         mtx.unlock();
-    }
+    }*/
 }
+
+/*TODO:
+remove unnecessary saved permutations
+have the computer determine how many tests it's going to run beforehand
+test against wordle answers before testing against all words
+*/
 
 /**
  * @brief tries all permutations and returns the best permutations along with the number of fails
@@ -210,7 +232,7 @@ void compareFails(const std::vector<std::string> firstWords) {
  * @param firstWords 
  * @return std::pair<int, std::vector<std::vector<std::string>>> 
  */
-std::pair<int, std::vector<std::vector<std::string>>> testPermutations(std::vector<std::string> firstWords) {
+std::pair<int, std::vector</*std::vector<*/std::string>>/*>*/ testPermutations(std::vector<std::string> firstWords) {
     //test all permutations
     std::sort(firstWords.begin(), firstWords.end());
     std::vector<std::thread> threads;
@@ -223,22 +245,29 @@ std::pair<int, std::vector<std::vector<std::string>>> testPermutations(std::vect
     return {lowestFails, bestPermutations};
 }
 
-// int main() {
-//     std::cout << "running\n";
-//     // const std::vector<std::string> firstWords = {"soily", "prude", "chant"};
-//     // std::vector<std::string> firstWords = {"brame", "flint", "shuck", "podgy"};
-//     // std::vector<std::string> firstWords = {"redub", "oflag", "ticks", "nymph"};
-//     std::vector<std::string> firstWords = {"shame", "podgy", "brunt", "flick"};
-//     // const std::vector<std::string> firstWords = {"glent", "brick", "jumpy", "vozhd", "waqfs"};
-    
-//     auto [lowestFails, bestPermutations] = testPermutations(firstWords);
-//     for (auto& set : bestPermutations) {
-//         for (std::string word : set) {
-//             std::cout << word << ' ';
-//         }
-//         std::cout << '\n';
-//     }
-//     std::cout << "lowest fails: " << lowestFails << '\n';
-//     std::cin.ignore();
-//     return 0;
-// }
+int main() {
+    auto startTesting = Clock::now();
+    std::cout << "running ";
+    // std::vector<std::string> firstWords = {"soily", "prude", "chant"}; //Highest scoring 3
+    std::vector<std::string> firstWords = {"fitly", "paned", "smock", "burgh"}; //Best I could find for all answers
+    // std::vector<std::string> firstWords = {"brogh", "safed", "tumpy", "clink"}; //Best I could find for wordle answer list
+    // std::vector<std::string> firstWords = {"stare", "doing", "lucky"}; //Buzzfeed suggestion
+    // std::vector<std::string> firstWords = {"redub", "oflag", "ticks", "nymph"}; //Lowest scoring 4
+    // std::vector<std::string> firstWords = {"glent", "brick", "jumpy", "vozhd", "waqfs"}; //Popular tiktok strategy
+    auto [lowestFails, bestPermutations] = testPermutations(firstWords);
+    auto finishTesting = Clock::now();
+    std::cout << '(' << std::chrono::duration_cast<std::chrono::milliseconds>(finishTesting-startTesting).count() << "ms)\n";
+    // for (auto& set : bestPermutations) {
+    //     for (std::string word : set) {
+    //         std::cout << word << ' ';
+    //     }
+    //     std::cout << '\n';
+    // }
+    for (std::string word : bestPermutations) {
+        std::cout << word << ' ';
+    }
+    std::cout << '\n';
+    std::cout << "lowest fails: " << lowestFails;
+    std::cin.ignore();
+    return 0;
+}

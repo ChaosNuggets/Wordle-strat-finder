@@ -4,6 +4,6 @@
 #include <vector>
 #include <string>
 
-std::pair<int, std::vector<std::vector<std::string>>> testPermutations(std::vector<std::string> firstWords);
+std::pair<int, std::vector</*std::vector<*/std::string>>/*>*/ testPermutations(std::vector<std::string> firstWords);
 
 #endif

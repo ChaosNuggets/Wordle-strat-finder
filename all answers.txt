@@ -1,0 +1,3 @@
+fitly paned smock burgh 
+lowest fails: 271
+number of permutations with the same number of fails: 248892
