@@ -13,3 +13,7 @@ const std::vector<char> firstDimensionOrder = {
 char alphaPlaceToChar(const int place) {
     return char(place + 97);
 }
+
+// int charToAlphaPlace(const char letter) {
+//     return int(letter) - 97;
+// }

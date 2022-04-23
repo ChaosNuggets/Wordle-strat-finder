@@ -5,5 +5,6 @@
 
 const extern std::vector<char> firstDimensionOrder;
 char alphaPlaceToChar(const int place);
+// int charToAlphaPlace(const char letter);
 
 #endif

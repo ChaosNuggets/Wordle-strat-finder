@@ -4,6 +4,12 @@
 #include <vector>
 #include <string>
 
-std::pair<int, std::vector</*std::vector<*/std::string>>/*>*/ testPermutations(std::vector<std::string> firstWords);
+// extern int lowestFailsAll;
+extern int lowestFailsNotAnswerList;
+extern int lowestFailsAnswerList;
+extern int equivalentPermutations;
+extern std::vector</*std::vector<*/std::string>/*>*/ bestPermutation;
+
+void testPermutations(std::vector<std::string> firstWords);
 
 #endif

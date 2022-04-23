@@ -1150,7 +1150,7 @@ const std::vector<std::string> possibleAnswers = {
     "cheap",
     "elide",
     "rigid",
-    "FALSE",
+    "false",
     "renal",
     "pence",
     "rowdy",
