@@ -1,0 +1,9 @@
+removing unnecessary words (3298us)
+finding combinations (347307ms)
+combinations found between 2500 - 2600: 66650
+testing permutations (5913863ms)
+camps nudge forby thilk
+fails against answer list: 16 / 2119
+fails against all words: 283 / 12953
+number of permutations with the same number of fails: 2
+score: something in the low 2500s

@@ -188,6 +188,12 @@ void testEveryPermutation() {
     }
 }
 
+std::ofstream fout;
+void consoleAndFilePrint(std::string output) {
+    std::cout << output;
+    fout << output;
+}
+
 int main() {
     const std::vector<char> usingLetters = {
         'e', 'a', 'r', 'o', 't',
@@ -199,21 +205,31 @@ int main() {
     };
 
     auto startRemoving = Clock::now();
-    std::cout << "removing unnecessary words ";
+    fout.open("log.txt", std::ios_base::app);
+    consoleAndFilePrint("removing unnecessary words ");
+    fout.close();
     removeUnnecessaryWords(usingLetters);
     auto startFinding = Clock::now();
-    std::cout << '(' << std::chrono::duration_cast<std::chrono::microseconds>(startFinding - startRemoving).count() << "µs)\n";
+    fout.open("log.txt", std::ios_base::app);
+    consoleAndFilePrint(std::string("(") + std::to_string(std::chrono::duration_cast<std::chrono::microseconds>(startFinding - startRemoving).count()) + std::string("us)\n"));
 
-    std::cout << "finding combinations ";
-    findCombinations(usingLetters, 2700, 2800); //Finds all the combinations between upper and lower scores
+    consoleAndFilePrint("finding combinations ");
+    fout.close();
+    const int lowerScore = 2100;
+    const int upperScore = 2500;
+    // findCombinations(usingLetters, lowerScore, upperScore); //Finds all the combinations between upper and lower scores
+    combinations.push_back({"felch", "konbu", "tarps", "midgy"});
     auto startTesting = Clock::now();
-    std::cout << '(' << std::chrono::duration_cast<std::chrono::milliseconds>(startTesting - startFinding).count() << "ms)\n";
-    std::cout << "combinations found: " << combinations.size() << '\n';
+    fout.open("log.txt", std::ios_base::app);
+    consoleAndFilePrint(std::string("(") + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(startTesting - startFinding).count()) + std::string("ms)\n"));
+    consoleAndFilePrint(std::string("combinations found between ") + std::to_string(lowerScore) + std::string(" - ") + std::to_string(upperScore) + std::string(": ") + std::to_string(combinations.size()) + std::string("\n"));
 
-    std::cout << "testing permutations ";
+    consoleAndFilePrint("testing permutations ");
+    fout.close();
     testEveryPermutation(); //Tests all the permutations of the combinations that were found using findCombinations()
     auto finishTesting = Clock::now();
-    std::cout << '(' << std::chrono::duration_cast<std::chrono::milliseconds>(finishTesting - startTesting).count() << "s)\n";
+    fout.open("log.txt", std::ios_base::app);
+    consoleAndFilePrint(std::string("(") + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(finishTesting - startTesting).count()) + std::string("ms)\n"));
 
     // for (std::vector<std::string>& vec : bestWords) {
     //     for (std::string word : vec) {
@@ -221,20 +237,17 @@ int main() {
     //     }
     //     std::cout << '\n';
     // }
-    for (std::string word : bestPermutation)
-        std::cout << word << ' ';
-    std::cout << '\n';
-    std::cout << "fails against answer list: " << lowestFailsAnswerList << '\n';
-    std::cout << "fails against all words: " << lowestFailsAnswerList + lowestFailsNotAnswerList << '\n';
-    std::cout << "number of permutations with the same number of fails: " << equivalentPermutations;
+    int setScore = 0;
+    for (std::string word : bestPermutation) {
+        consoleAndFilePrint(word + std::string(" "));
+        setScore += score(word);
+    }
+    consoleAndFilePrint("\n");
+    consoleAndFilePrint(std::string("fails against answer list: ") + std::to_string(lowestFailsAnswerList) + std::string(" / 2119\n"));
+    consoleAndFilePrint(std::string("fails against all words: ") + std::to_string(lowestFailsAnswerList + lowestFailsNotAnswerList) + std::string(" / 12953\n"));
+    consoleAndFilePrint(std::string("number of permutations with the same number of fails: ") + std::to_string(equivalentPermutations) + std::string("\n"));
+    consoleAndFilePrint(std::string("score: ") + std::to_string(setScore));
 
-    std::ofstream fout("log.txt");
-    for (std::string word : bestPermutation)
-        fout << word << ' ';
-    fout << '\n';
-    fout << "fails against answer list: " << lowestFailsAnswerList << '\n';
-    fout << "fails against all words: " << lowestFailsAnswerList + lowestFailsNotAnswerList << '\n';
-    fout << "number of permutations with the same number of fails: " << equivalentPermutations;
     fout.close();
     std::cin.ignore();
     return 0;

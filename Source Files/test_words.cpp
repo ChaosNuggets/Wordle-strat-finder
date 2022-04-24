@@ -237,20 +237,25 @@ void testPermutations(std::vector<std::string> firstWords) {
     } while (std::next_permutation(firstWords.begin(), firstWords.end()));
 
     //Decide whether it should keep testing each permutation
+    int j = 0; //the index of the permutation the answerFuture corresponds to
     for (int i = 0; i < answerFutures.size(); i++) {
         int numberOfFails = answerFutures[i].get();
         if (numberOfFails < lowestFailsAnswerList) {
             lowestFailsAnswerList = numberOfFails;
             //get rid of the permutations before the good one
-            if (i > 0)
-                permutations.erase(permutations.begin(), permutations.begin() + i - 1);
+            permutations.erase(permutations.begin(), permutations.begin() + j);
             //permutations now serves as the list of permutations to keep testing
             bestPermutation = permutations[0];
+            j = 1;
+            //Reset this now that we've found a better solution
+            lowestFailsNotAnswerList = 10834;
         } else if (numberOfFails > lowestFailsAnswerList) {
             //If bad then get rid of the permutation
-            permutations.erase(permutations.begin() + i);
-        }
-        //If it's equal then do nothing
+            permutations.erase(permutations.begin() + j);
+            //j doesn't change
+        } else
+            //If it's equal increment j
+            j++;
     }
 
     //Test each remaining permutation

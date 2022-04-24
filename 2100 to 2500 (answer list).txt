@@ -1,0 +1,9 @@
+removing unnecessary words (6053us)
+finding combinations (334774ms)
+combinations found between 2100 - 2500: 248825
+testing permutations (21158188ms)
+felch konbu tarps midgy 
+fails against answer list: 15 / 2119
+fails against all words: 309 / 12953
+number of permutations with the same number of fails: 6
+score: 2136

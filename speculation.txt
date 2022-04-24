@@ -1,0 +1,4 @@
+2900-3201: too high
+2800-2900: too high
+2500-2600: too high
+2000-2100: too low

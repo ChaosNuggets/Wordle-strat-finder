@@ -40,7 +40,7 @@ int score(const std::string word) {
 }
 
 // int main() {
-//     const std::vector<std::string> wordsToScore = {"fitly", "paned", "smock", "burgh"};
+//     const std::vector<std::string> wordsToScore = {"camps", "nudge", "forby", "thilk"};
 //     int totalScore = 0;
 //     for (std::string word : wordsToScore) {
 //         totalScore += score(word);

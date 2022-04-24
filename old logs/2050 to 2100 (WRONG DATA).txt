@@ -1,0 +1,9 @@
+removing unnecessary words (5649us)
+finding combinations (329948ms)
+combinations found between 2050 - 2100: 14775
+testing permutations (1418297ms)
+combi kandy terfs gulph 
+fails against answer list: 17 / 2119
+fails against all words: 325 / 12953
+number of permutations with the same number of fails: 6
+score: 2078
