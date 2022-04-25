@@ -1,0 +1,9 @@
+removing unnecessary words (5584us)
+finding combinations (341161ms)
+combinations found between 2800 - 2900: 13697
+testing permutations (3193950ms)
+dongs prime chaft bulky 
+fails against answer list: 133 / 2119
+fails against all words: 1493 / 12953
+number of permutations with the same number of fails: 2
+score: 2802

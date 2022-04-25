@@ -215,10 +215,10 @@ int main() {
 
     consoleAndFilePrint("finding combinations ");
     fout.close();
-    const int lowerScore = 2100;
-    const int upperScore = 2500;
-    // findCombinations(usingLetters, lowerScore, upperScore); //Finds all the combinations between upper and lower scores
-    combinations.push_back({"felch", "konbu", "tarps", "midgy"});
+    const int lowerScore = 2500;
+    const int upperScore = 2800;
+    findCombinations(usingLetters, lowerScore, upperScore); //Finds all the combinations between upper and lower scores
+    // combinations.push_back({"felch", "konbu", "tarps", "midgy"});
     auto startTesting = Clock::now();
     fout.open("log.txt", std::ios_base::app);
     consoleAndFilePrint(std::string("(") + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(startTesting - startFinding).count()) + std::string("ms)\n"));
@@ -252,5 +252,3 @@ int main() {
     std::cin.ignore();
     return 0;
 }
-
-//Best 4 words:

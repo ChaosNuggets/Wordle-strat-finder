@@ -1,0 +1,9 @@
+removing unnecessary words (4837us)
+finding combinations (351616ms)
+combinations found between 2100 - 2500: 248825
+testing permutations (51106520ms)
+gulfy taped chirm bonks 
+fails against answer list: 121 / 2119
+fails against all words: 1304 / 12953
+number of permutations with the same number of fails: 2
+score: 2499

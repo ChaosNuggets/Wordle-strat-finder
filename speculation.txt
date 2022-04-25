@@ -1,4 +1,9 @@
 2900-3201: too high
 2800-2900: too high
 2500-2600: too high
+2100-2500: just right, best ended up being 2136
 2000-2100: too low
+
+Guranteed:
+2800-2900: too high
+2100-2500: too low

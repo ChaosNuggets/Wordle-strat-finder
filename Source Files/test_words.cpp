@@ -154,17 +154,18 @@ bool doWordsWork(const std::string answer, const std::vector<std::string> firstW
                 //If the code reaches here, the input is good, so try it
                 numberOfWordsGuessed++;
                 // wordsGuessed.push_back(input);
-                if (input == answer) {
-                    return true;
-                }
-                if (numberOfWordsGuessed >= 6) {
+                // if (input == answer) {
+                //     return true;
+                // }
+                if (numberOfWordsGuessed >= 7) {
                     return false;
                 }
-                determineColors(grays, greens, oranges, input, answer);
+                // determineColors(grays, greens, oranges, input, answer);
             }
         }
     }
-    throw std::runtime_error(std::string("the answer ") + answer + std::string(" is invalid"));
+    return true;
+    // throw std::runtime_error(std::string("the answer ") + answer + std::string(" is invalid"));
 }
 
 // int testWordsAgainstAll(const std::vector<std::string> firstWords) {
@@ -242,10 +243,9 @@ void testPermutations(std::vector<std::string> firstWords) {
         int numberOfFails = answerFutures[i].get();
         if (numberOfFails < lowestFailsAnswerList) {
             lowestFailsAnswerList = numberOfFails;
+            //permutations now serves as the list of permutations to keep testing
             //get rid of the permutations before the good one
             permutations.erase(permutations.begin(), permutations.begin() + j);
-            //permutations now serves as the list of permutations to keep testing
-            bestPermutation = permutations[0];
             j = 1;
             //Reset this now that we've found a better solution
             lowestFailsNotAnswerList = 10834;
@@ -272,8 +272,16 @@ void testPermutations(std::vector<std::string> firstWords) {
             lowestFailsNotAnswerList = numberOfFails;
             bestPermutation = permutations[i];
             equivalentPermutations = 1;
+            // for (std::string word : permutations[i]) {
+            //     std::cout << word << ' ';
+            // }
+            // std::cout << numberOfFails << " \n";
         } else if (numberOfFails == lowestFailsNotAnswerList) {
             equivalentPermutations++;
+            // for (std::string word : permutations[i]) {
+            //     std::cout << word << ' ';
+            // }
+            // std::cout << numberOfFails << " \n";
         }
     }
 }
@@ -282,8 +290,9 @@ void testPermutations(std::vector<std::string> firstWords) {
 //     auto startTesting = Clock::now();
 //     std::cout << "running ";
 //     // std::vector<std::string> firstWords = {"soily", "prude", "chant"}; //Highest scoring 3
-//     // std::vector<std::string> firstWords = {"fitly", "paned", "smock", "burgh"}; //Best I could find for all answers
-//     std::vector<std::string> firstWords = {"brogh", "safed", "tumpy", "clink"}; //Best I could find for wordle answer list
+//     // std::vector<std::string> firstWords = {"brogh", "safed", "tumpy", "clink"}; //Highest scoring 4
+//     std::vector<std::string> firstWords = {"fitly", "paned", "smock", "burgh"}; //Best I could find for all answers
+//     // std::vector<std::string> firstWords = {"felch", "konbu", "tarps", "midgy"}; //Best I could find for wordle answer list
 //     // std::vector<std::string> firstWords = {"stare", "doing", "lucky"}; //Buzzfeed suggestion
 //     // std::vector<std::string> firstWords = {"redub", "oflag", "ticks", "nymph"}; //Lowest scoring 4
 //     // std::vector<std::string> firstWords = {"glent", "brick", "jumpy", "vozhd", "waqfs"}; //Popular tiktok strategy
@@ -301,7 +310,8 @@ void testPermutations(std::vector<std::string> firstWords) {
 //     }
 //     std::cout << '\n';
 //     std::cout << "fails against answer list: " << lowestFailsAnswerList << '\n';
-//     std::cout << "fails against all words: " << lowestFailsAnswerList + lowestFailsNotAnswerList;
+//     std::cout << "fails against all words: " << lowestFailsAnswerList + lowestFailsNotAnswerList << '\n';
+//     std::cout << "equivalent permutations: " << equivalentPermutations;
 //     std::cin.ignore();
 //     return 0;
 // }
