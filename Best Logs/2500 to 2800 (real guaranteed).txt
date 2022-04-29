@@ -1,0 +1,9 @@
+removing unnecessary words (6534us)
+finding combinations (334421ms)
+combinations found between 2500 - 2800: 141609
+testing permutations (40400527ms)
+budge rolfs tanky chimp 
+fails against answer list: 60 / 2119
+fails against all words: 865 / 12953
+number of permutations with the same number of fails: 6
+score: 2500

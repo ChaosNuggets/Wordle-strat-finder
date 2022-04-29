@@ -1,0 +1,4 @@
+removing unnecessary words (5290us)
+finding combinations (344500ms)
+combinations found between 2300 - 2400: 71395
+testing permutations 

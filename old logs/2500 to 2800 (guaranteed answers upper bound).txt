@@ -1,0 +1,9 @@
+removing unnecessary words (5473us)
+finding combinations (333843ms)
+combinations found between 2500 - 2800: 141609
+testing permutations (29600262ms)
+panel tombs chirk fudgy 
+fails against answer list: 119 / 2119
+fails against all words: 1300 / 12953
+number of permutations with the same number of fails: 2
+score: 2557
