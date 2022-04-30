@@ -215,8 +215,8 @@ int main() {
 
     consoleAndFilePrint("finding combinations ");
     fout.close();
-    const int lowerScore = 2100;
-    const int upperScore = 2200;
+    const int lowerScore = 2200;
+    const int upperScore = 2300;
     findCombinations(usingLetters, lowerScore, upperScore); //Finds all the combinations between upper and lower scores
     // combinations.push_back({"felch", "konbu", "tarps", "midgy"});
     auto startTesting = Clock::now();
@@ -243,8 +243,8 @@ int main() {
         setScore += score(word);
     }
     consoleAndFilePrint("\n");
-    consoleAndFilePrint(std::string("fails against answer list: ") + std::to_string(lowestFailsAnswerList) + std::string(" / 2119\n"));
-    consoleAndFilePrint(std::string("fails against all words: ") + std::to_string(lowestFailsAnswerList + lowestFailsNotAnswerList) + std::string(" / 12953\n"));
+    consoleAndFilePrint(std::string("fails against answer list: ") + std::to_string(lowestFailsAnswerList) + std::string(" / 2309\n"));
+    consoleAndFilePrint(std::string("fails against all words: ") + std::to_string(lowestFailsAnswerList + lowestFailsNotAnswerList) + std::string(" / 12974\n"));
     consoleAndFilePrint(std::string("number of permutations with the same number of fails: ") + std::to_string(equivalentPermutations) + std::string("\n"));
     consoleAndFilePrint(std::string("score: ") + std::to_string(setScore));
 

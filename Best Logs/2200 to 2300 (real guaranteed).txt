@@ -1,0 +1,9 @@
+removing unnecessary words (9001us)
+finding combinations (334318ms)
+combinations found between 2200 - 2300: 60319
+testing permutations (16974899ms)
+kings ralph tubed comfy 
+fails against answer list: 59 / 2119
+fails against all words: 847 / 12953
+number of permutations with the same number of fails: 6
+score: 2273

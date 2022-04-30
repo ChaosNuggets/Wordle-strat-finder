@@ -222,9 +222,9 @@ bool doWordsWork(const std::string answer, const std::vector<std::string> firstW
 //     return numberOfFails;
 // }
 
-// int lowestFailsAll = 12953;
-int lowestFailsAnswerList = 2119;
-int lowestFailsNotAnswerList = 10834;
+// int lowestFailsAll = 12974;
+int lowestFailsAnswerList = 2309;
+int lowestFailsNotAnswerList = 10665;
 int equivalentPermutations = 0;
 
 int testWordsAgainstNotAnswerList(const std::vector<std::string> firstWords) {
@@ -357,8 +357,8 @@ void testPermutations(std::vector<std::string> firstWords) {
 //         }
 //         std::cout << ")\n";
 //     }
-//     std::cout << "fails against answer list: " << lowestFailsAnswerList << " / 2119\n";
-//     std::cout << "fails against all words: " << lowestFailsAnswerList + lowestFailsNotAnswerList << " / 12953\n";
+//     std::cout << "fails against answer list: " << lowestFailsAnswerList << " / 2309\n";
+//     std::cout << "fails against all words: " << lowestFailsAnswerList + lowestFailsNotAnswerList << " / 12974\n";
 //     std::cout << "equivalent permutations: " << equivalentPermutations;
 //     std::cin.ignore();
 //     return 0;
