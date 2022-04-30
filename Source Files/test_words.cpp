@@ -12,7 +12,7 @@
 
 typedef std::chrono::high_resolution_clock Clock;
 
-void determineColors(std::vector<char>& grays, std::vector<std::pair<char, int>>& greens, std::vector<std::pair<char, int>>& oranges, std::string input, std::string answer) {
+void determineColors(std::vector<char>& grays, std::vector<std::pair<char, int>>& greens, std::vector<std::pair<char, int>>& oranges, const std::string input, const std::string answer) {
     for (int j = 0; j < 5; j++) {
         bool isOrange = false;
         bool isGreen = false;
@@ -119,6 +119,9 @@ bool doWordsEliminateEachOther(const std::vector<char>& grays, const std::vector
     return true;
 }
 
+//1st dim = different answers 2nd dim is for separating the answers from the possible guesses
+// std::vector<std::vector<std::string>> wordsThatFail;
+
 bool doWordsWork(const std::string answer, const std::vector<std::string> firstWords) {
     int numberOfWordsGuessed = 0;
     //char = letter, int = index
@@ -189,6 +192,17 @@ bool doWordsWork(const std::string answer, const std::vector<std::string> firstW
 
     //Test each possible input to see if they eliminate each other
     return doWordsEliminateEachOther(grays, greens, oranges, possibleInputs, answer, 6-numberOfWordsGuessed);
+    // if (doWordsEliminateEachOther(grays, greens, oranges, possibleInputs, answer, 6-numberOfWordsGuessed))
+    //     return true;
+    // else {
+    //     std::vector<std::string> vectorThatsGoingToBePushedBackVerySoon;
+    //     vectorThatsGoingToBePushedBackVerySoon.emplace_back(answer);
+    //     for (std::string input : possibleInputs) {
+    //         vectorThatsGoingToBePushedBackVerySoon.emplace_back(input);
+    //     }
+    //     wordsThatFail.push_back(vectorThatsGoingToBePushedBackVerySoon);
+    //     return false;
+    // }
     // throw std::runtime_error(std::string("the answer ") + answer + std::string(" is invalid"));
 }
 
@@ -316,16 +330,13 @@ void testPermutations(std::vector<std::string> firstWords) {
 // int main() {
 //     auto startTesting = Clock::now();
 //     std::cout << "running ";
-//     // std::vector<std::string> firstWords = {"soily", "prude", "chant"}; //Highest scoring 3
-//     // std::vector<std::string> firstWords = {"brogh", "safed", "tumpy", "clink"}; //Highest scoring 4
-//     // std::vector<std::string> firstWords = {"fitly", "paned", "smock", "burgh"}; //Best I could find for all answers
-//     // std::vector<std::string> firstWords = {"felch", "konbu", "tarps", "midgy"}; //Best I could find for wordle answer list
-//     std::vector<std::string> firstWords = {"chirk", "panel", "tombs", "fudgy"}; //Most guaranteed answers
+//     // std::vector<std::string> firstWords = {"flame", "shunt", "brick", "podgy"}; //Pokecheese's strategy
+//     std::vector<std::string> firstWords = {"bumph", "calfs", "token", "ridgy"}; //Most guaranteed answers
 //     // std::vector<std::string> firstWords = {"stare", "doing", "lucky"}; //Buzzfeed suggestion
 //     // std::vector<std::string> firstWords = {"redub", "oflag", "ticks", "nymph"}; //Lowest scoring 4
 //     // std::vector<std::string> firstWords = {"glent", "brick", "jumpy", "vozhd", "waqfs"}; //Popular tiktok strategy
-//     // testPermutations(firstWords);
-//     testWordsAgainstAnswerList(firstWords);
+//     testPermutations(firstWords);
+//     // lowestFailsAnswerList = testWordsAgainstAnswerList(firstWords);
 //     auto finishTesting = Clock::now();
 //     std::cout << '(' << std::chrono::duration_cast<std::chrono::milliseconds>(finishTesting-startTesting).count() << "ms)\n";
 //     // for (auto& set : bestPermutation) {
@@ -334,10 +345,18 @@ void testPermutations(std::vector<std::string> firstWords) {
 //     //     }
 //     //     std::cout << '\n';
 //     // }
-//     for (std::string word : bestPermutation) {
-//         std::cout << word << ' ';
+//     // for (std::string word : bestPermutation) {
+//     //     std::cout << word << ' ';
+//     // }
+//     // std::cout << '\n';
+//     std::sort(wordsThatFail.begin(), wordsThatFail.end());
+//     for (auto& set : wordsThatFail) {
+//         std::cout << '"' << set[0] << "\" fails (possible guesses:";
+//         for (int i = 1; i < set.size(); i++) {
+//             std::cout << ' ' << set[i];
+//         }
+//         std::cout << ")\n";
 //     }
-//     std::cout << '\n';
 //     std::cout << "fails against answer list: " << lowestFailsAnswerList << " / 2119\n";
 //     std::cout << "fails against all words: " << lowestFailsAnswerList + lowestFailsNotAnswerList << " / 12953\n";
 //     std::cout << "equivalent permutations: " << equivalentPermutations;
@@ -346,10 +365,10 @@ void testPermutations(std::vector<std::string> firstWords) {
 // }
 
 // int main() {
-//     std::vector<char> grays;
-//     std::vector<std::pair<char, int>> greens;
-//     std::vector<std::pair<char, int>> oranges;
-//     std::vector<std::string> possibleInputs = {"catch", "clamp", "match"};
-//     std::cout << doWordsEliminateEachOther(grays, greens, oranges, possibleInputs, "catch", possibleInputs.size() - 1);
+//     std::vector<char> grays = {'f', 'l', 'm', 'e', 's', 'h', 'b', 'r', 'i', 'c', 'k', 'p', 'o', 'd', 'g', 'y'};
+//     std::vector<std::pair<char, int>> greens = {{'u', 2}, {'n', 3}, {'t', 4}};
+//     std::vector<std::pair<char, int>> oranges = {{'a', 2}};
+//     std::vector<std::string> possibleInputs = {"taunt", "naunt", "vaunt", "jaunt"};
+//     std::cout << doWordsEliminateEachOther(grays, greens, oranges, possibleInputs, "jaunt", possibleInputs.size() - 1);
 //     return 0;
 // }

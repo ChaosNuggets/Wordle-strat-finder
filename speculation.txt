@@ -11,3 +11,5 @@ Guranteed upper bound:
 
 Real Guranteed:
 2500-2800: too high
+2300-2400: too high
+2100-2200: too low

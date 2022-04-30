@@ -1,0 +1,9 @@
+removing unnecessary words (5593us)
+finding combinations (350242ms)
+combinations found between 2100 - 2200: 43767
+testing permutations (13274025ms)
+crogs kalif tyned bumph 
+fails against answer list: 63 / 2119
+fails against all words: 836 / 12953
+number of permutations with the same number of fails: 6
+score: 2156
