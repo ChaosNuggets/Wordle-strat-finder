@@ -4,13 +4,17 @@
 2100-2500: just right, best ended up being 2136
 2000-2100: too low
 
-Guranteed upper bound:
+Guaranteed upper bound:
 2800-2900: too high
 2500-2800: correct
 2100-2500: too low
 
-Real Guranteed:
+Real Guaranteed:
 2500-2800: too high
 2300-2400: too high
 2200-2300: correct
 2100-2200: too low
+
+Real Guaranteed new list:
+2300-2400: too high
+2200-2300: correct

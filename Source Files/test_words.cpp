@@ -2,11 +2,11 @@
 #include "const_words.h"
 #include "skip_helper.h"
 #include <algorithm>
-#include "test_words.h"
 #include <thread>
 #include <future>
 #include <chrono>
 #include "possible_answers.h"
+#include "test_words.h"
 #include "not_answers.h"
 // #include <vector>
 
@@ -331,12 +331,12 @@ void testPermutations(std::vector<std::string> firstWords) {
 //     auto startTesting = Clock::now();
 //     std::cout << "running ";
 //     // std::vector<std::string> firstWords = {"flame", "shunt", "brick", "podgy"}; //Pokecheese's strategy
-//     std::vector<std::string> firstWords = {"bumph", "calfs", "token", "ridgy"}; //Most guaranteed answers
+//     std::vector<std::string> firstWords = {"kings", "ralph", "tubed", "comfy"}; //Most guaranteed answers (best for no memorization)
 //     // std::vector<std::string> firstWords = {"stare", "doing", "lucky"}; //Buzzfeed suggestion
 //     // std::vector<std::string> firstWords = {"redub", "oflag", "ticks", "nymph"}; //Lowest scoring 4
 //     // std::vector<std::string> firstWords = {"glent", "brick", "jumpy", "vozhd", "waqfs"}; //Popular tiktok strategy
-//     testPermutations(firstWords);
-//     // lowestFailsAnswerList = testWordsAgainstAnswerList(firstWords);
+//     // testPermutations(firstWords);
+//     lowestFailsAnswerList = testWordsAgainstAnswerList(firstWords);
 //     auto finishTesting = Clock::now();
 //     std::cout << '(' << std::chrono::duration_cast<std::chrono::milliseconds>(finishTesting-startTesting).count() << "ms)\n";
 //     // for (auto& set : bestPermutation) {

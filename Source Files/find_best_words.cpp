@@ -245,8 +245,8 @@ int main() {
 
     consoleAndFilePrint("finding combinations ");
     fout.close();
-    const int lowerScore = 2200;
-    const int upperScore = 2300;
+    const int lowerScore = 2300;
+    const int upperScore = 2400;
     findCombinations(usingLetters, lowerScore, upperScore); //Finds all the combinations between upper and lower scores
     // combinations.push_back({"felch", "konbu", "tarps", "midgy"});
     auto startTesting = Clock::now();

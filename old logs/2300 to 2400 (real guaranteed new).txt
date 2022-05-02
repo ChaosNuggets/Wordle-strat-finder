@@ -1,0 +1,9 @@
+removing unnecessary words (6160us)
+finding combinations (339432ms)
+combinations found between 2300 - 2400: 72739
+testing permutations (28655756ms)
+bumph calfs token ridgy 
+fails against answer list: 66 / 2309
+fails against all words: 837 / 12974
+number of permutations with the same number of fails: 6
+score: 2316
