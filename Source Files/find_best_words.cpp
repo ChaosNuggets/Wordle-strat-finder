@@ -9,6 +9,7 @@
 #include <chrono>
 #include <fstream>
 #include "score.h"
+#include <thread>
 
 // std::vector<std::vector<std::vector<std::string>>> dynamicWords = {
 //     {{}},
@@ -37,7 +38,7 @@
 
 typedef std::chrono::high_resolution_clock Clock;
 
-bool removeUsedLetters(std::vector<char>& unusedLetters, const std::string word) {
+static bool removeUsedLetters(std::vector<char>& unusedLetters, const std::string word) {
     for (char letter : word) {
         auto it = std::find(unusedLetters.begin(), unusedLetters.end(), letter);
         //If letter is in the list
@@ -49,7 +50,7 @@ bool removeUsedLetters(std::vector<char>& unusedLetters, const std::string word)
     return true;
 }
 
-bool testUsedLetters(const std::vector<char>& unusedLetters, const std::string word) {
+static bool testUsedLetters(const std::vector<char>& unusedLetters, const std::string word) {
     for (char letter : word) {                        
         //If letter is in the list
         if (std::find(unusedLetters.begin(), unusedLetters.end(), letter) == unusedLetters.end())
@@ -64,7 +65,7 @@ bool testUsedLetters(const std::vector<char>& unusedLetters, const std::string w
 //     bestWords.push_back(strings);
 // }
 
-void removeUnnecessaryWords(const std::vector<char>& usingLetters) {
+static void removeUnnecessaryWords(const std::vector<char>& usingLetters) {
     for (int h = 0; h < dynamicWords.size(); h++) {
         for (int i = 0; i < dynamicWords[h].size(); i++) {
             std::vector<std::string> currentWords = dynamicWords[h][i];
@@ -95,9 +96,9 @@ void removeUnnecessaryWords(const std::vector<char>& usingLetters) {
     }
 }
 
-std::vector<std::vector<std::string>> combinations;
+static std::vector<std::vector<std::string>> combinations;
 
-void findCombinations(const std::vector<char>& usingLetters, const int lowerScore, const int upperScore) {
+static void findCombinations(const std::vector<char>& usingLetters, const int lowerScore, const int upperScore) {
     std::vector<char> skipChars;
     skipChars.resize(17);
     for (int aFirst = 0; aFirst < dynamicWords.size()-2; aFirst++) {
@@ -180,16 +181,45 @@ void findCombinations(const std::vector<char>& usingLetters, const int lowerScor
     }
 }
 
-void testEveryPermutation() {
-    for(auto& combination : combinations) {
-        testPermutations(combination);
-        if (lowestFailsAnswerList == 0 && lowestFailsNotAnswerList == 0)
-            return;
+static void testEveryPermutation() {
+    static bool shouldPause = false;
+    static bool hasFinished = false;
+    static int i = 0;
+    std::thread permutationTester([] {
+        for(i = 0; i < combinations.size(); i++) {
+            testPermutations(combinations[i]);
+            if (lowestFailsAnswerList == 0 && lowestFailsNotAnswerList == 0) {
+                return;
+            }
+            while (shouldPause) {
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+        std::cout << "press enter to show results\n";
+        hasFinished = true;
+    });
+    while (true) {
+        std::string input;
+        std::getline(std::cin, input);
+        if (hasFinished) {
+            break;
+        }
+        if (input == "pause") {
+            shouldPause = true;
+        } else if (input == "resume") {
+            shouldPause = false;
+        } else if (input == "progress") {
+            std::cout << "combinations tested: " << i << " / " << combinations.size() << '\n';
+        } else {
+            std::cout << input << " is not a valid command\n";
+        }
     }
+    permutationTester.join();
 }
 
-std::ofstream fout;
-void consoleAndFilePrint(std::string output) {
+static std::ofstream fout;
+static void consoleAndFilePrint(std::string output) {
     std::cout << output;
     fout << output;
 }
@@ -226,6 +256,7 @@ int main() {
 
     consoleAndFilePrint("testing permutations ");
     fout.close();
+    std::cout << '\n';
     testEveryPermutation(); //Tests all the permutations of the combinations that were found using findCombinations()
     auto finishTesting = Clock::now();
     fout.open("log.txt", std::ios_base::app);

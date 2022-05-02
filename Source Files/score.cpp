@@ -2,7 +2,7 @@
 #include <iostream>
 
 //matching probability*100
-const std::unordered_map<char, std::vector<int>> matchingProbability = {
+static const std::unordered_map<char, std::vector<int>> matchingProbability = {
     {'a', {109, 234, 237, 126,  49}},
     {'b', {133,  12,  44,  18,   8}},
     {'c', {153,  31,  43, 117,  24}},

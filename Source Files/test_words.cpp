@@ -10,9 +10,9 @@
 #include "not_answers.h"
 // #include <vector>
 
-typedef std::chrono::high_resolution_clock Clock;
+// typedef std::chrono::high_resolution_clock Clock;
 
-void determineColors(std::vector<char>& grays, std::vector<std::pair<char, int>>& greens, std::vector<std::pair<char, int>>& oranges, const std::string input, const std::string answer) {
+static void determineColors(std::vector<char>& grays, std::vector<std::pair<char, int>>& greens, std::vector<std::pair<char, int>>& oranges, const std::string input, const std::string answer) {
     for (int j = 0; j < 5; j++) {
         bool isOrange = false;
         bool isGreen = false;
@@ -35,7 +35,7 @@ void determineColors(std::vector<char>& grays, std::vector<std::pair<char, int>>
     }
 }
 
-std::vector<std::pair<char, int>>::iterator findPair(const std::vector<std::pair<char, int>>::iterator first, const std::vector<std::pair<char, int>>::iterator last, const std::pair<char, int>& item) {
+static std::vector<std::pair<char, int>>::iterator findPair(const std::vector<std::pair<char, int>>::iterator first, const std::vector<std::pair<char, int>>::iterator last, const std::pair<char, int>& item) {
     for (auto it = first; it != last; it++) {
         if (*it == item)
             return it;
@@ -43,7 +43,7 @@ std::vector<std::pair<char, int>>::iterator findPair(const std::vector<std::pair
     return last;
 }
 
-std::vector<std::pair<char, int>>::iterator findSecond(const std::vector<std::pair<char, int>>::iterator first, const std::vector<std::pair<char, int>>::iterator last, const int item) {
+static std::vector<std::pair<char, int>>::iterator findSecond(const std::vector<std::pair<char, int>>::iterator first, const std::vector<std::pair<char, int>>::iterator last, const int item) {
     for (auto it = first; it != last; it++) {
         if (it->second == item)
             return it;
@@ -51,7 +51,7 @@ std::vector<std::pair<char, int>>::iterator findSecond(const std::vector<std::pa
     return last;
 }
 
-bool doesWordMatchClues(const std::vector<char>& grays, const std::vector<std::pair<char, int>>& greens, const std::vector<std::pair<char, int>>& oranges, const std::string input, const bool skipFirst2Letters) {
+static bool doesWordMatchClues(const std::vector<char>& grays, const std::vector<std::pair<char, int>>& greens, const std::vector<std::pair<char, int>>& oranges, const std::string input, const bool skipFirst2Letters) {
     //Test grays (we only need to test the last 3 letters since we already tested the first 2 above)
     int i;
     if (skipFirst2Letters)
@@ -90,7 +90,7 @@ bool doesWordMatchClues(const std::vector<char>& grays, const std::vector<std::p
     return true;
 }
 
-bool doWordsEliminateEachOther(const std::vector<char>& grays, const std::vector<std::pair<char, int>>& greens, const std::vector<std::pair<char, int>>& oranges, std::vector<std::string> possibleInputs, const std::string answer, const int freeSpots) {
+static bool doWordsEliminateEachOther(const std::vector<char>& grays, const std::vector<std::pair<char, int>>& greens, const std::vector<std::pair<char, int>>& oranges, std::vector<std::string> possibleInputs, const std::string answer, const int freeSpots) {
     for (int i = 0; i < possibleInputs.size(); i++) {
         if (possibleInputs.size() <= freeSpots)
             return true;
@@ -122,7 +122,7 @@ bool doWordsEliminateEachOther(const std::vector<char>& grays, const std::vector
 //1st dim = different answers 2nd dim is for separating the answers from the possible guesses
 // std::vector<std::vector<std::string>> wordsThatFail;
 
-bool doWordsWork(const std::string answer, const std::vector<std::string> firstWords) {
+static bool doWordsWork(const std::string answer, const std::vector<std::string> firstWords) {
     int numberOfWordsGuessed = 0;
     //char = letter, int = index
     std::vector<char> grays;
@@ -227,7 +227,7 @@ int lowestFailsAnswerList = 2309;
 int lowestFailsNotAnswerList = 10665;
 int equivalentPermutations = 0;
 
-int testWordsAgainstNotAnswerList(const std::vector<std::string> firstWords) {
+static int testWordsAgainstNotAnswerList(const std::vector<std::string> firstWords) {
     int numberOfFails = 0;
     for (std::string answer : notAnswers1) {
         if (!doWordsWork(answer, firstWords))
@@ -246,7 +246,7 @@ int testWordsAgainstNotAnswerList(const std::vector<std::string> firstWords) {
     return numberOfFails;
 }
 
-int testWordsAgainstAnswerList(const std::vector<std::string> firstWords) {
+static int testWordsAgainstAnswerList(const std::vector<std::string> firstWords) {
     int numberOfFails = 0;
     for (std::string answer : possibleAnswers) {
         if (!doWordsWork(answer, firstWords)) {
