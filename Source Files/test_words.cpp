@@ -5,9 +5,8 @@
 #include <thread>
 #include <future>
 #include <chrono>
-#include "possible_answers.h"
+#include "answers.h"
 #include "test_words.h"
-#include "not_answers.h"
 // #include <vector>
 
 // typedef std::chrono::high_resolution_clock Clock;
@@ -120,7 +119,8 @@ static bool doWordsEliminateEachOther(const std::vector<char>& grays, const std:
 }
 
 //1st dim = different answers 2nd dim is for separating the answers from the possible guesses
-// std::vector<std::vector<std::string>> wordsThatFail;
+// static std::vector<std::vector<std::string>> wordsThatFail;
+static std::vector<std::vector<std::string>> setsToMemorize;
 
 static bool doWordsWork(const std::string answer, const std::vector<std::string> firstWords) {
     int numberOfWordsGuessed = 0;
@@ -175,8 +175,9 @@ static bool doWordsWork(const std::string answer, const std::vector<std::string>
             if (findPair(oranges.begin(), oranges.end(), {secondLetter, 1}) != oranges.end())
                 continue;
             for (std::string input : constWords[inputFirst][inputSecond]) {
-                if (doesWordMatchClues(grays, greens, oranges, input, true))
+                if (doesWordMatchClues(grays, greens, oranges, input, true)) {
                     possibleInputs.push_back(input);
+                }
                 // numberOfWordsGuessed++;
                 // wordsGuessed.push_back(input);
                 // if (input == answer) {
@@ -191,19 +192,13 @@ static bool doWordsWork(const std::string answer, const std::vector<std::string>
     }
 
     //Test each possible input to see if they eliminate each other
-    return doWordsEliminateEachOther(grays, greens, oranges, possibleInputs, answer, 6-numberOfWordsGuessed);
-    // if (doWordsEliminateEachOther(grays, greens, oranges, possibleInputs, answer, 6-numberOfWordsGuessed))
-    //     return true;
-    // else {
-    //     std::vector<std::string> vectorThatsGoingToBePushedBackVerySoon;
-    //     vectorThatsGoingToBePushedBackVerySoon.emplace_back(answer);
-    //     for (std::string input : possibleInputs) {
-    //         vectorThatsGoingToBePushedBackVerySoon.emplace_back(input);
-    //     }
-    //     wordsThatFail.push_back(vectorThatsGoingToBePushedBackVerySoon);
-    //     return false;
-    // }
-    // throw std::runtime_error(std::string("the answer ") + answer + std::string(" is invalid"));
+    for (std::string word : possibleInputs) {
+        if (std::find(answers.begin(), answers.end(), word) != answers.end()) {
+            if (!doWordsEliminateEachOther(grays, greens, oranges, possibleInputs, answer, 6-numberOfWordsGuessed))
+                return false;
+        }
+    }
+    return true;
 }
 
 // int testWordsAgainstAll(const std::vector<std::string> firstWords) {
@@ -227,28 +222,18 @@ int lowestFailsAnswerList = 2309;
 int lowestFailsNotAnswerList = 10665;
 int equivalentPermutations = 0;
 
-static int testWordsAgainstNotAnswerList(const std::vector<std::string> firstWords) {
-    int numberOfFails = 0;
-    for (std::string answer : notAnswers1) {
-        if (!doWordsWork(answer, firstWords))
-            numberOfFails++;
-        //We can return early because we don't care about the answers that are above the lowest fails
-        if (numberOfFails > lowestFailsNotAnswerList)
-            return numberOfFails;
-    }
-    for (std::string answer : notAnswers2) {
-        if (!doWordsWork(answer, firstWords))
-            numberOfFails++;
-        //We can return early because we don't care about the answers that are above the lowest fails
-        if (numberOfFails > lowestFailsNotAnswerList)
-            return numberOfFails;
-    }
-    return numberOfFails;
-}
-
 static int testWordsAgainstAnswerList(const std::vector<std::string> firstWords) {
     int numberOfFails = 0;
-    for (std::string answer : possibleAnswers) {
+    for (std::string answer : answers) {
+        bool shouldContinue = false;
+        for (auto& set : setsToMemorize) {
+            if (std::find(set.begin(), set.end(), answer) != set.end()) {
+                shouldContinue = true;
+                break;
+            }
+        }
+        if (shouldContinue)
+            continue;
         if (!doWordsWork(answer, firstWords)) {
             numberOfFails++;
             // std::cout << answer << '\n';
@@ -278,52 +263,15 @@ void testPermutations(std::vector<std::string> firstWords) {
         permutations.emplace_back(firstWords);
     } while (std::next_permutation(firstWords.begin(), firstWords.end()));
 
-    //Decide whether it should keep testing each permutation
-    int j = 0; //the index of the permutation the answerFuture corresponds to
+    //See if any of the permutations are the best one
     for (int i = 0; i < answerFutures.size(); i++) {
         int numberOfFails = answerFutures[i].get();
         if (numberOfFails < lowestFailsAnswerList) {
             lowestFailsAnswerList = numberOfFails;
-            //permutations now serves as the list of permutations to keep testing
-            //get rid of the permutations before the good one
-            permutations.erase(permutations.begin(), permutations.begin() + j);
-            j = 1;
-            //Reset this now that we've found a better solution
-            lowestFailsNotAnswerList = 10834;
-        } else if (numberOfFails > lowestFailsAnswerList) {
-            //If bad then get rid of the permutation
-            permutations.erase(permutations.begin() + j);
-            //j doesn't change
-        } else
-            //If it's equal increment j
-            j++;
-    }
-
-    //Test each remaining permutation
-    std::vector<std::future<int>> notAnswerFutures;
-    for (auto& permutation : permutations) {
-        notAnswerFutures.emplace_back(std::async(testWordsAgainstNotAnswerList, permutation));
-    }
-
-    //get the results for the remaining permutations (all the remaining permutations have the same value for lowestFailsAnswerList)
-    for (int i = 0; i < notAnswerFutures.size(); i++) {
-        int numberOfFails = notAnswerFutures[i].get();
-        if (numberOfFails < lowestFailsNotAnswerList) {
-            //You have just found the best permutation so far
-            lowestFailsNotAnswerList = numberOfFails;
             bestPermutation = permutations[i];
             equivalentPermutations = 1;
-            // for (std::string word : permutations[i]) {
-            //     std::cout << word << ' ';
-            // }
-            // std::cout << numberOfFails << " \n";
-        } else if (numberOfFails == lowestFailsNotAnswerList) {
+        } else if (numberOfFails == lowestFailsAnswerList)
             equivalentPermutations++;
-            // for (std::string word : permutations[i]) {
-            //     std::cout << word << ' ';
-            // }
-            // std::cout << numberOfFails << " \n";
-        }
     }
 }
 

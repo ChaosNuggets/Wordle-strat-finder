@@ -1,6 +1,6 @@
-#include "possible_answers.h"
+#include "answers.h"
 
-const std::vector<std::string> possibleAnswers = {
+const std::vector<std::string> answers = {
     "cigar",
     "rebut",
     "sissy",
